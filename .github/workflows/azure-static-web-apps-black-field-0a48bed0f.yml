@@ -13,7 +13,7 @@ jobs:
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
-    name: Build and Deploy Job
+    name: Build, Test and Deploy Job
 
     steps:
       - name: Checkout
@@ -31,18 +31,36 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # --------------------------------
+      # Run Angular Unit Tests
+      # --------------------------------
+      - name: Run Angular Unit Tests
+        run: npm test -- --watch=false --browsers=ChromeHeadless
+
+      # --------------------------------
+      # Build Angular
+      # --------------------------------
       - name: Build Angular
         run: npm run build
 
+      # --------------------------------
+      # Verify Angular build
+      # --------------------------------
       - name: Verify Angular build
         run: |
           echo "Checking Angular build output..."
+
           ls -la dist
           ls -la dist/searchoptions
           ls -la dist/searchoptions/browser
+
           test -f dist/searchoptions/browser/index.html
+
           echo "Angular build verified successfully."
 
+      # --------------------------------
+      # Deploy to Azure Static Web Apps
+      # --------------------------------
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -55,6 +73,9 @@ jobs:
           output_location: ""
           skip_app_build: true
 
+  # --------------------------------
+  # Close Pull Request
+  # --------------------------------
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
