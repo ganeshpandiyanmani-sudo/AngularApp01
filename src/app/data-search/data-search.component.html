@@ -1,0 +1,23 @@
+<p>data-search works!</p>
+
+
+<input type="text" [formControl]="searchControl" placeholder="search filter">
+
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Location</td>
+            <td>Department</td>
+        </tr>
+    </thead>
+    <tbody>
+        @for (emp of listEmpData; track emp.name) {
+        <tr>
+            <td>{{emp.name}}</td>
+            <td>{{emp.location}}</td>
+            <td>{{emp.department}}</td>
+        </tr>
+    }
+    </tbody>
+</table>
