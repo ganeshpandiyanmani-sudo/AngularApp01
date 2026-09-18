@@ -39,7 +39,8 @@ jobs:
           echo "Checking Angular build output..."
           ls -la dist
           ls -la dist/searchoptions
-          test -f dist/searchoptions/index.html
+          ls -la dist/searchoptions/browser
+          test -f dist/searchoptions/browser/index.html
           echo "Angular build verified successfully."
 
       - name: Build And Deploy
@@ -50,7 +51,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
 
-          app_location: "/dist/searchoptions"
+          app_location: "/dist/searchoptions/browser"
           output_location: ""
           skip_app_build: true
 
